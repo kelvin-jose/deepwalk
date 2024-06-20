@@ -93,3 +93,4 @@ for epoch in tqdm(range(EPOCHS)):
         optim.zero_grad()
         loss.backward()
         optim.step()
+        etrain_loss.append(loss.detach().numpy())
