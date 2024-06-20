@@ -106,3 +106,11 @@ for epoch in tqdm(range(EPOCHS)):
     # Calculate and store average training and testing loss for this epoch
     train_loss.append(sum(etrain_loss) / len(etrain_loss))
     test_loss.append(sum(etest_loss) / len(etest_loss))
+
+# Plot the training and testing loss
+fig, ax = plt.subplots()
+ax.plot(train_loss, label = 'train')
+ax.plot(test_loss, label = 'test')
+ax.legend(frameon = False, loc = 'lower center', ncol = 2)
+ax.set_title('train and test losses')
+plt.show()
