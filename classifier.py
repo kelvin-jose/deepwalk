@@ -63,3 +63,33 @@ class NNClassifier(nn.Module):
 # Initialize the neural network classifier and optimizer
 nnmodel = NNClassifier()
 optim = AdamW(nnmodel.parameters(), lr = LEARN_RATE)
+
+# Convert data to PyTorch tensors and create datasets and dataloaders
+xtrain = Tensor(xtrain)
+ytrain = Tensor(ytrain.values).type(long)
+xtest = Tensor(xtest)
+ytest = Tensor(ytest.values).type(long)
+
+train_dataset = TensorDataset(xtrain, ytrain)
+train_dataloader = DataLoader(train_dataset, batch_size = BATCH_SIZE)
+test_dataset = TensorDataset(xtest, ytest)
+test_dataloader = DataLoader(test_dataset, batch_size = BATCH_SIZE)
+
+# Lists to store training and testing loss
+train_loss = []
+test_loss = []
+
+# Training loop
+for epoch in tqdm(range(EPOCHS)):
+    etrain_loss = []
+    etest_loss = []
+
+    # Set the model to training mode
+    nnmodel.train()
+    # Iterate through the training data
+    for batch_x, batch_y in train_dataloader:
+        probs = nnmodel(batch_x)
+        loss = nn.functional.cross_entropy(probs, batch_y)
+        optim.zero_grad()
+        loss.backward()
+        optim.step()
