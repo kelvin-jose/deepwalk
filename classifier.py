@@ -94,3 +94,15 @@ for epoch in tqdm(range(EPOCHS)):
         loss.backward()
         optim.step()
         etrain_loss.append(loss.detach().numpy())
+
+    # Set the model to evaluation mode
+    nnmodel.eval()
+    # Iterate through the testing data
+    for batch_x, batch_y in test_dataloader:
+        probs = nnmodel(batch_x)
+        loss = nn.functional.cross_entropy(probs, batch_y)
+        etest_loss.append(loss.detach().numpy())
+
+    # Calculate and store average training and testing loss for this epoch
+    train_loss.append(sum(etrain_loss) / len(etrain_loss))
+    test_loss.append(sum(etest_loss) / len(etest_loss))
