@@ -42,3 +42,24 @@ xtrain, xtest, ytrain, ytest = train_test_split(model.wv.vectors,
                                                 meta_df['y'], 
                                                 train_size = 0.9, 
                                                 stratify = meta_df['y'])
+
+# Define a neural network classifier
+class NNClassifier(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.linear1 = nn.Linear(model.wv.vector_size, model.wv.vector_size // 2)
+        self.dropout1 = nn.Dropout(p = 0.2)
+        self.linear2 = nn.Linear(model.wv.vector_size // 2, NUM_CLASSES)
+        self.dropout2 = nn.Dropout(p = 0.2)
+
+    def forward(self, x):
+        x = self.linear1(x)
+        x = self.dropout1(x)
+        x = self.linear2(x)
+        x = self.dropout2(x)
+        probs = nn.functional.softmax(x, dim = -1)
+        return probs
+
+# Initialize the neural network classifier and optimizer
+nnmodel = NNClassifier()
+optim = AdamW(nnmodel.parameters(), lr = LEARN_RATE)
